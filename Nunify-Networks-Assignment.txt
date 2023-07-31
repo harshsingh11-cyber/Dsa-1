@@ -1,0 +1,110 @@
+package New;
+import java.util.Scanner;
+
+public class WarehouseRobot {
+
+    // for leftturn of robot
+    static char Left(char currentDir) {
+        int ind = getDirInd(currentDir);
+        return DIRECTIONS[(ind + 3) % 4];
+    }
+
+
+    // for right turn
+    static char Right(char currentDir) {
+        int ind = getDirInd(currentDir);
+        return DIRECTIONS[(ind + 1) % 4];
+    }
+
+
+
+    // Our 4 - direction = EWNS
+    static char[] DIRECTIONS = {'N', 'E', 'S', 'W'};
+
+    public static void main(String[] args) {
+        Scanner hs = new Scanner(System.in);
+
+        // take input from user its cordinate max value
+        int maxX = hs.nextInt();
+        int maxY = hs.nextInt();
+        hs.nextLine();
+
+        // we take input from user multiple time its current position and direction
+        while (hs.hasNextLine()) {
+            String position = hs.nextLine();
+            String pathline = hs.nextLine();
+
+
+            // providing the value of x and y -- make array then divide
+            String[] ArrayIn = position.split(" ");
+
+            int x = Integer.parseInt(ArrayIn[0]);
+            int y = Integer.parseInt(ArrayIn[1]);
+            char dir = ArrayIn[2].charAt(0);
+
+
+
+            // here we go with instruction String
+            for (char ch : pathline.toCharArray()) {
+
+                if (ch == 'L') {
+                    dir = Left(dir);
+                }
+
+                else if (ch == 'R') {
+                    dir = Right(dir);
+                }
+
+                else if (ch == 'M') {
+
+                    // its check for the robot is in cordinate
+                    int[] newPosition = moveForward(x, y, dir, maxX, maxY);
+                    if (newPosition == null) {
+                        continue;
+                    }
+                    x = newPosition[0];
+                    y = newPosition[1];
+                }
+            }
+            System.out.println(x + " " + y + " " + dir);
+            System.out.println();
+        }
+    }
+
+    // Move forword direction
+    private static int[] moveForward(int x, int y, char dir, int maxX, int maxY) {
+        int newX = x;
+        int newY = y;
+
+        if (dir == 'N') {
+            newY++;
+        } else if (dir == 'E') {
+            newX++;
+        } else if (dir == 'S') {
+            newY--;
+        } else if (dir == 'W') {
+            newX--;
+        }
+
+        // provide new cordinate for robote
+        if (newX >= 0 && newX <= maxX && newY >= 0 && newY <= maxY) {
+            x = newX;
+            y = newY;
+        } else {
+            System.out.println("The Robot is outside of cordinate please check it");
+            return null;
+        }
+
+        return new int[]{x, y};
+    }
+
+    // provide the direction of robot which side 
+     static int getDirInd(char dir) {
+        for (int i = 0; i < DIRECTIONS.length; i++) {
+            if (DIRECTIONS[i] == dir) {
+                return i;
+            }
+        }
+        throw new IllegalArgumentException("Invalid direction please check and confire with user: " + dir);
+    }
+}
